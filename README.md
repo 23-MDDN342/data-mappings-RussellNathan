@@ -1,7 +1,7 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/HpplOQZx)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=15068734&assignment_repo_type=AssignmentRepo)
-## 2024 MDDN342 Assignment 3: Data Mappings
+### Nathan Russell MDDN342 Project 3: Data Mappings
+MY design intentions with this project make no detour from those in project 2. I will design a program that can map a convincingly hand-drawn face onto photos of human faces with machine learning.
 
-REPLACE ALL TEXT IN THIS FILE
+Many details in the human subjects will affect the parameters of the design including age and smile. The parameters changed include jitter, brush size and brush blemishes.
 
-This README should be used to document your design.
+Many days were lost trying to adapt the loadStrings function from my Project 2 code to Project 3. This function was supposed to load the arrays of coordinates for the shapes of different parts of the face. I concluded that because of the hierarchy of this project, it just isn't possible to load strings with the preload function like I usually would, because for some reason anything loaded here would be outside of the scope of any functions run afterward. Maaybe if I spent more time I could figure out a fix for this but otherwise it seems a better use of my time to just hardcode the coordinates into the face.js script and move on.
+Given the context of the delivery for this project, I see no significant disadvantages to hardcoding the coordinates outside of the aesthetics of how the code looks.
