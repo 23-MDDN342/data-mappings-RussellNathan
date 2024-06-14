@@ -16,7 +16,7 @@ const stroke_color = [95, 52, 8];
  * some text here
  */
 let BrushDetail = 100;
-let iEye = 3;
+let iEye = 5;
 let iNose = 2;
 let iMouth = 1;
 let sPupil  = 0.5;
@@ -40,10 +40,9 @@ let noseCoords  = [
   [0.191290323,-0.439189189,0.191290323,-0.439189189,0.140967742,-0.44972973,0.128387097,-0.344594595,0.115806452,-0.239459459,0.48,1.905945946,0.567741935,2.242432432,0.655806452,2.578918919,1.232903226,4.240540541,1.220322581,4.419459459,1.208064516,4.598108108,1.007096774,4.482432432,1.007096774,4.524594595,1.007096774,4.566486486,0.542580645,1.495945946,0.542580645,1.274864865,0.542580645,1.054054054,0.994516129,1.737837838,1.358387097,1.905945946,1.722580645,2.074324324,-0.486451613,2.337027027,-0.838064516,2.421351351,-1.189354839,2.505405405,-1.302580645,2.358108108,-1.452903226,2.368648649,-1.603548387,2.379189189,-1.766774194,2.484324324,-1.766774194,2.484324324],
 ];
 let mouthCoords = [
-  [-2.46,-0.39,-2.4044,-0.496,-2.22,-0.63,-2.0356,-0.764,-1.2382,-1.05,-0.54,-1.11,0.1582,-1.171,1.0596,-1.096,1.38,-0.87,1.7004,-0.645,2.1272,-0.168,1.86,0.09,1.5928,0.348,1.3967,0.535,0.9,0.57,0.4033,0.605,-0.0427,0.684,-0.54,0.57,-1.0373,0.455,-1.2615,-0.014,-1.26,-0.15,-1.2585,-0.286,-1.0272,-0.767,-0.3,-0.87,0.4272,-0.974,1.1736,-0.951,1.38,-0.63,2.0449,0.403,1.8195,0.818,1.419,0.986,1.0185,1.153,0.2036,1.136,-0.3,1.29,-0.8679,1.463,-0.7558,1.463,-0.78,1.5300000],
   [2.620967742,-0.695675676,2.342903226,-0.852972973,2.192903226,-1.041621622,2.042580645,-1.230540541,1.76483871,-1.375135135,1.719677419,-1.40027027,1.674516129,-1.425675676,1.389032258,-1.035405405,1.201290323,-0.915945946,1.013548387,-0.796216216,0.292580645,-0.261351351,0.16483871,-0.305405405,0.037419355,-0.349459459,-0.803870968,-1.35,-1.104193548,-1.356216216,-1.40483871,-1.362702703,-2.651612903,-0.311891892,-2.689032258,-0.185945946,-2.726774194,-0.06,2.448064516,0.336486486,2.666129032,0.267297297,2.883870968,0.197837838,2.358064516,0.128648649,2.200322581,0.141351351,2.042580645,0.153783784,-0.067741935,0.273513514,-1.074193548,0.128648649,-2.080645161,-0.015945946,-2.523870968,0.424594595,-2.531290323,0.518918919,-2.538709677,0.613243243,-0.939032258,1.034864865,-0.037741935,1.17972973,0.863548387,1.324324324,1.952580645,1.343243243,2.388064516,1.223783784,2.823548387,1.104054054,2.620967742,1.154324324,2.620967742,1.154324324],
   [2.763870968,-0.344594595,2.561290323,-1.175135135,2.065483871,-1.168918919,1.569677419,-1.162432432,0.720967742,-1.521081081,-0.382903226,-1.301081081,-1.487096774,-1.080810811,-2.613548387,-0.822702703,-2.636129032,-0.256486486,-2.658709677,0.31,-2.290645161,0.838648649,-1.772258065,1.146756757,-1.254193548,1.455135135,1.457096774,1.014864865,1.892903226,1.058648649,2.328387097,1.102702703,1.314516129,-1.571621622,1.314516129,-1.571621622,1.314516129,-1.571621622,2.163225806,0.630810811,1.892903226,0.901351351,1.622258065,1.172162162,0.646129032,1.159459459,0.563548387,1.109189189,0.480645161,1.058648649,0.022580645,-1.288378378,0.04516129,-1.546486486,0.067741935,-1.804324324,0.345483871,0.083513514,0.353225806,0.549189189,0.360645161,1.014864865,0.187741935,1.26027027,-0.420645161,1.165675676,-1.028709677,1.071351351,-1.336774194,-0.885675676,-1.419354839,-1.206486486,-1.501935484,-1.527567568,-0.968709677,-0.124324324,-1.066451613,0.026756757,-1.164193548,0.177837838,-2.388387097,0.64972973,-2.448387097,0.549189189,-2.508387097,0.448378378,-0.473225806,0.114864865,-0.037419355,0.102162162,0.398064516,0.08972973,1.862580645,0.039459459,2.065483871,0.08972973,2.268387097,0.14,2.658709677,0.165135135,2.658709677,0.165135135],
-  [19.108,6.495,18.48,3.422,16.943,3.445,15.406,3.469,12.775,2.142,9.353,2.956,5.93,3.771,2.438,4.726,2.368,6.821,2.298,8.917,3.439,10.873,5.046,12.013,6.652,13.154,15.057,11.525,16.408,11.687,17.758,11.85,14.615,1.955,14.615,1.955,14.615,1.955,17.246,10.104,16.408,11.105,15.569,12.107,12.543,12.06,12.287,11.874,12.03,11.687,10.61,3.003,10.68,2.048,10.75,1.094,11.611,8.079,11.635,9.802,11.658,11.525,11.122,12.433,9.236,12.083,7.351,11.734,6.396,4.493,6.14,3.306,5.884,2.118,7.537,7.31,7.234,7.869,6.931,8.428,3.136,10.174,2.95,9.802,2.764,9.429,9.073,8.195,10.424,8.148,11.774,8.102,16.314,7.916,16.943,8.102,17.572,8.288,18.782,8.381,18.782,8.381],
+  [-2.46,-0.39,-2.4044,-0.496,-2.22,-0.63,-2.0356,-0.764,-1.2382,-1.05,-0.54,-1.11,0.1582,-1.171,1.0596,-1.096,1.38,-0.87,1.7004,-0.645,2.1272,-0.168,1.86,0.09,1.5928,0.348,1.3967,0.535,0.9,0.57,0.4033,0.605,-0.0427,0.684,-0.54,0.57,-1.0373,0.455,-1.2615,-0.014,-1.26,-0.15,-1.2585,-0.286,-1.0272,-0.767,-0.3,-0.87,0.4272,-0.974,1.1736,-0.951,1.38,-0.63,2.0449,0.403,1.8195,0.818,1.419,0.986,1.0185,1.153,0.2036,1.136,-0.3,1.29,-0.8679,1.463,-0.7558,1.463,-0.78,1.5300000],
 ];
 let bezierJoin  = 0;
 let coords;
@@ -70,6 +69,7 @@ function Face() {
   this.mouth_size = 1;  // range is 0.5 to 8
   this.brush_size = 1;  // range is 0.5 to 2
   this.brush_rough  = 50; // range is 0 to 100
+  this.faceDirection  = 0;  // is either 0 or 1 (0 is facing left, 1 is facing right)
 
   this.chinColour = [153, 153, 51]
   this.lipColour = [136, 68, 68]
@@ -89,49 +89,27 @@ function Face() {
     // ellipse(segment_average(positions.chin)[0], 0, 3, 4);
     noStroke();
 
-
-    // mouth
-    fill(this.detailColour);
-    ellipse(segment_average(positions.bottom_lip)[0], segment_average(positions.bottom_lip)[1], 1.36, 0.25 * this.mouth_size);
-
-    // eyebrows
-    fill( this.eyebrowColour);
-    stroke( this.eyebrowColour);
-    strokeWeight(0.08);
-    this.draw_segment(positions.left_eyebrow);
-    this.draw_segment(positions.right_eyebrow);
-
-    // draw the chin segment using points
-    fill(this.chinColour);
-    stroke(this.chinColour);
-    this.draw_segment(positions.chin);
-
-    fill(100, 0, 100);
-    stroke(100, 0, 100);
-    this.draw_segment(positions.nose_bridge);
-    this.draw_segment(positions.nose_tip);
-
-    strokeWeight(0.03);
-
-    fill(this.lipColour);
-    stroke(this.lipColour);
-    this.draw_segment(positions.top_lip);
-    this.draw_segment(positions.bottom_lip);
+    if (segment_average(positions.chin)[0] > 0){
+      this.faceDirection  = 0;
+    }
+    else  {this.faceDirection  = 1;}
 
     let left_eye_pos = segment_average(positions.left_eye);
     let right_eye_pos = segment_average(positions.right_eye);
     let nose_cent_pos = segment_average(positions.nose_bridge);
-    let mouth_pos = (segment_average(positions.top_lip)  +   segment_average(positions.bottom_lip)  / 2);
-
-    let roughness = 0;
-
+    let mouth_posX = (segment_average(positions.top_lip)[0]  +   segment_average(positions.bottom_lip)[0]  / 2);
+    let mouth_posY = (segment_average(positions.top_lip)[1]  +   segment_average(positions.bottom_lip)[1]  / 2);
+    this.mouthWidth = (positions.top_lip[6][0]-positions.top_lip[0][0]);
+    this.mouthType = (positions.bottom_lip[4][1]-positions.top_lip[4][1])/this.mouthWidth;
+    // ellipse(positions.top_lip[0][0],positions.top_lip[0][1],1);
+    // ellipse(positions.top_lip[6][0],positions.top_lip[6][1],1);
 
 
     //stroke parameters
     stroke('black');
     strokeWeight(0.1);
     fill('black');
-
+    
 
     //PUPIL LEFT
     coords  =   pupilCoords[0];
@@ -141,7 +119,7 @@ function Face() {
     let L_pupilOffsetY = -0.2;
     let L_pupilScale  = sPupil/10+0.2;
 
-    this.DrawShape(coords,   L_pupilTransX,L_pupilTransY,    L_pupilOffsetX,L_pupilOffsetY,    L_pupilScale,1,1,0,0,roughness);
+    this.DrawShape(coords,   L_pupilTransX,L_pupilTransY,    L_pupilOffsetX,L_pupilOffsetY,    L_pupilScale,1,1,0,0);
     
     //EYE LEFT
     coords  =   eyesCoords[iEye];
@@ -156,7 +134,7 @@ function Face() {
         bezierJoin = 2;
     } else  {bezierJoin = 0;}
 
-    this.DrawShape(coords,   L_eyeTransX,L_eyeTransY,    L_eyeOffsetX,L_eyeOffsetY,    L_eyeScale,1,1,0,bezierJoin,roughness);
+    this.DrawShape(coords,   L_eyeTransX,L_eyeTransY,    L_eyeOffsetX,L_eyeOffsetY,    L_eyeScale,1,1,0,bezierJoin);
 
     //PUPIL RIGHT
     coords  =   pupilCoords[0];
@@ -166,7 +144,7 @@ function Face() {
     let R_pupilOffsetY = -0.2;
     let R_pupilScale  = sPupil/10+0.2;
 
-    this.DrawShape(coords,   R_pupilTransX,R_pupilTransY,    R_pupilOffsetX,R_pupilOffsetY,    R_pupilScale,1,1,0,0,roughness);
+    this.DrawShape(coords,   R_pupilTransX,R_pupilTransY,    R_pupilOffsetX,R_pupilOffsetY,    R_pupilScale,1,1,0,0);
 
     //EYE RIGHT
     coords  =   eyesCoords[iEye];
@@ -180,7 +158,7 @@ function Face() {
     if (iEye==6) {
         bezierJoin = 2;
     }
-    this.DrawShape(coords,   R_eyeTransX,R_eyeTransY,    R_eyeOffsetX,R_eyeOffsetY,    R_eyeScale,-1,1,0,bezierJoin,roughness);
+    this.DrawShape(coords,   R_eyeTransX,R_eyeTransY,    R_eyeOffsetX,R_eyeOffsetY,    R_eyeScale,-1,1,0,bezierJoin);
 
     //NOSE
     coords  =   noseCoords[iNose];
@@ -193,18 +171,29 @@ function Face() {
     if (iNose==0){
       noseScaleX  = 1;
     }
+    if (this.faceDirection==1){
+      noseScaleX *= -1;
+    }
  
-    this.DrawShape(coords,   noseTransX,noseTransY,    noseOffsetX,noseOffsetY,    noseScale,noseScaleX,1,0,bezierJoin,roughness);   
+    this.DrawShape(coords,   noseTransX,noseTransY,    noseOffsetX,noseOffsetY,    noseScale,noseScaleX,1,0,bezierJoin);   
 
     //MOUTH
+    iMouth  =   round(map(this.mouthType,0.3,0.6,0,2,true));
     coords  =   mouthCoords[iMouth];
-    let mouthTransX = 1 + mouth_pos;
-    let mouthTransY = 0 + mouth_pos;
+    let mouthTransX = 0 + mouth_posX;
+    let mouthTransY = 0 + mouth_posY;
     let mouthOffsetX = 0;
-    let mouthOffsetY = -2.8;
-    let mouthScale = 0.4;
+    let mouthOffsetY = 0;
+    let mouthScale = this.mouthWidth/3.5;
+    let mouthScaleX = 1;
+    if (iMouth==1){
+      mouthScaleX *= -1;
+    }
+    if (this.faceDirection==1){      
+      mouthScaleX *= -1;
+    }
 
-    this.DrawShape(coords,   mouthTransX,mouthTransY,    mouthOffsetX,mouthOffsetY,    mouthScale,1,1,0,bezierJoin,roughness);
+    this.DrawShape(coords,   mouthTransX,mouthTransY,    mouthOffsetX,mouthOffsetY,    mouthScale,mouthScaleX,1,0,bezierJoin);
   }
 
   // example of a function *inside* the face object.
@@ -227,12 +216,12 @@ function Face() {
     }
   };
 
-  this.DrawShape = function(coords,dotTransX,dotTransY,dotOffsetX,dotOffsetY,shapeScale,shapeScaleX,shapeScaleY,shapeTilt,bezierJoin,roughness){
+  this.DrawShape = function(coords,dotTransX,dotTransY,dotOffsetX,dotOffsetY,shapeScale,shapeScaleX,shapeScaleY,shapeTilt,bezierJoin){
     push();
     // stroke('black');
     // strokeWeight(this.brush_size/20);
     noStroke();
-    fill(0,60);
+    fill(0,30);
 
     translate(dotTransX, dotTransY);
     scale(shapeScale*shapeScaleX,shapeScale*shapeScaleY);
