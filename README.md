@@ -1,5 +1,6 @@
-## 2024 MDDN342 Assignment 3: Data Mappings
-
-REPLACE ALL TEXT IN THIS FILE
-
-This README should be used to document your design.
+### Nathan Russell MDDN342 Project 3: Data Mappings
+Making a design look hand drawn in p5.js is quite a challenge but once the brush stroke has simulated, with every point in the stroke plotted, all it takes to make the design convincing is a bit of noise to move all those points around.
+I trained the program to quess two values in someones face: age and emotional valence (positive/negative emotions).
+With all the noise mapped to a single variable controlled by age, this made the hand drawn look hit even harder. The older the face appears, the more jittered the strokes become. Emotional valence controls the size of the brush stroke. A fuller stroke feels more happy whereas a thinner stroke feels more empty of emotion.
+I wanted to create the feeling of graffiti on a billboard, so the images I chose were all taken out of ads for real estate agents.
+The theme of real estate agents might seem totally out of the line with the aesthetic I chose, but that's exactly the point. The juxtaposition between the very formal serious people with feral abstract scribbles creates a composition that somehow feels even more chaotic than any other images I could have chosen.
