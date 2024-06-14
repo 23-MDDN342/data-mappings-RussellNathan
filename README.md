@@ -12,3 +12,6 @@ THe model has been trained on all of the images to identify both age and emotion
 
 v4
 Further improved how the trained data controls the face values. The mouth is now reactive to the pose of the image, how much open the mouth is changes the mouth shape to be drawn.
+
+v5
+Eyes are now also reactive.
