@@ -4,7 +4,7 @@
  */  
 
 // remove this or set to false to enable full program (load will be slower)
-// var DEBUG_MODE = true;
+var DEBUG_MODE = true;
 
 // this can be used to set the number of sliders to show
 var NUM_SLIDERS = 2;
@@ -121,7 +121,7 @@ function Face() {
     this.DrawShape(coords,   L_pupilTransX,L_pupilTransY,    L_pupilOffsetX,L_pupilOffsetY,    L_pupilScale,1,1,0,0);
     
     //EYE LEFT
-    iEyeL = int(map(this.left_brow_height,0.3,0.7,0,7,true));
+    iEyeL = int(map(this.left_brow_height,0.37,0.6,0,7,true));
     coords  =   eyesCoords[iEyeL];
     let L_eyeTransX = left_eye_pos[0];
     let L_eyeTransY = left_eye_pos[1];
@@ -147,7 +147,7 @@ function Face() {
     this.DrawShape(coords,   R_pupilTransX,R_pupilTransY,    R_pupilOffsetX,R_pupilOffsetY,    R_pupilScale,1,1,0,0);
 
     //EYE RIGHT
-    iEyeR = int(map(this.right_brow_height,0.3,0.7,0,7,true));
+    iEyeR = int(map(this.right_brow_height,0.37,0.6,0,7,true));
     coords  =   eyesCoords[iEyeR];
     let R_eyeTransX = right_eye_pos[0];
     let R_eyeTransY = right_eye_pos[1];
@@ -189,7 +189,7 @@ function Face() {
     let mouthTransY = 0 + mouth_posY;
     let mouthOffsetX = 0;
     let mouthOffsetY = 0;
-    let mouthScale = this.mouthWidth/3.5;
+    let mouthScale = this.mouthWidth/3-0.2;
     let mouthScaleX = 1;
     if (iMouth==1){
       mouthScaleX *= -1;
@@ -226,7 +226,7 @@ function Face() {
     // stroke('black');
     // strokeWeight(this.vEmo/20);
     noStroke();
-    fill(0,30);
+    fill(0,map(this.vAge,0,100,255,40));
 
     translate(dotTransX, dotTransY);
     scale(shapeScale*shapeScaleX,shapeScale*shapeScaleY);
