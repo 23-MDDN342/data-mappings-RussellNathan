@@ -7,7 +7,7 @@
 var DEBUG_MODE = true;
 
 // this can be used to set the number of sliders to show
-var NUM_SLIDERS = 3;
+var NUM_SLIDERS = 2;
 
 // other variables can be in here too
 // here's some examples for colors used
@@ -67,9 +67,9 @@ function Face() {
   // (your variables should be different!)
   this.detailColour = [204, 136, 17];
   this.mainColour = [51, 119, 153];
-  this.num_eyes = 2;    // can be either 1 (cyclops) or 2 (two eyes)
-  this.eye_shift = -1;   // range is -10 to 10
   this.mouth_size = 1;  // range is 0.5 to 8
+  this.brush_size = 1;  // range is 0.5 to 2
+  this.brush_rough  = 50; // range is 0 to 100
 
   this.chinColour = [153, 153, 51]
   this.lipColour = [136, 68, 68]
@@ -123,6 +123,8 @@ function Face() {
     let nose_cent_pos = segment_average(positions.nose_bridge);
     let mouth_pos = (segment_average(positions.top_lip)  +   segment_average(positions.bottom_lip)  / 2);
 
+    let roughness = 0;
+
 
 
     //stroke parameters
@@ -139,7 +141,7 @@ function Face() {
     let L_pupilOffsetY = -0.2;
     let L_pupilScale  = sPupil/10+0.2;
 
-    DrawShape(coords,   L_pupilTransX,L_pupilTransY,    L_pupilOffsetX,L_pupilOffsetY,    L_pupilScale,1,1,0,0);
+    this.DrawShape(coords,   L_pupilTransX,L_pupilTransY,    L_pupilOffsetX,L_pupilOffsetY,    L_pupilScale,1,1,0,0,roughness);
     
     //EYE LEFT
     coords  =   eyesCoords[iEye];
@@ -154,7 +156,7 @@ function Face() {
         bezierJoin = 2;
     } else  {bezierJoin = 0;}
 
-    DrawShape(coords,   L_eyeTransX,L_eyeTransY,    L_eyeOffsetX,L_eyeOffsetY,    L_eyeScale,1,1,0,bezierJoin);
+    this.DrawShape(coords,   L_eyeTransX,L_eyeTransY,    L_eyeOffsetX,L_eyeOffsetY,    L_eyeScale,1,1,0,bezierJoin,roughness);
 
     //PUPIL RIGHT
     coords  =   pupilCoords[0];
@@ -164,7 +166,7 @@ function Face() {
     let R_pupilOffsetY = -0.2;
     let R_pupilScale  = sPupil/10+0.2;
 
-    DrawShape(coords,   R_pupilTransX,R_pupilTransY,    R_pupilOffsetX,R_pupilOffsetY,    R_pupilScale,1,1,0,0);
+    this.DrawShape(coords,   R_pupilTransX,R_pupilTransY,    R_pupilOffsetX,R_pupilOffsetY,    R_pupilScale,1,1,0,0,roughness);
 
     //EYE RIGHT
     coords  =   eyesCoords[iEye];
@@ -178,7 +180,7 @@ function Face() {
     if (iEye==6) {
         bezierJoin = 2;
     }
-    DrawShape(coords,   R_eyeTransX,R_eyeTransY,    R_eyeOffsetX,R_eyeOffsetY,    R_eyeScale,-1,1,0,bezierJoin);
+    this.DrawShape(coords,   R_eyeTransX,R_eyeTransY,    R_eyeOffsetX,R_eyeOffsetY,    R_eyeScale,-1,1,0,bezierJoin,roughness);
 
     //NOSE
     coords  =   noseCoords[iNose];
@@ -192,7 +194,7 @@ function Face() {
       noseScaleX  = 1;
     }
  
-    DrawShape(coords,   noseTransX,noseTransY,    noseOffsetX,noseOffsetY,    noseScale,noseScaleX,1,0,bezierJoin);   
+    this.DrawShape(coords,   noseTransX,noseTransY,    noseOffsetX,noseOffsetY,    noseScale,noseScaleX,1,0,bezierJoin,roughness);   
 
     //MOUTH
     coords  =   mouthCoords[iMouth];
@@ -202,7 +204,7 @@ function Face() {
     let mouthOffsetY = -2.8;
     let mouthScale = 0.4;
 
-    DrawShape(coords,   mouthTransX,mouthTransY,    mouthOffsetX,mouthOffsetY,    mouthScale,1,1,0,bezierJoin);
+    this.DrawShape(coords,   mouthTransX,mouthTransY,    mouthOffsetX,mouthOffsetY,    mouthScale,1,1,0,bezierJoin,roughness);
   }
 
   // example of a function *inside* the face object.
@@ -225,28 +227,12 @@ function Face() {
     }
   };
 
-  /* set internal properties based on list numbers 0-100 */
-  this.setProperties = function(settings) {
-    this.num_eyes = int(map(settings[0], 0, 100, 1, 2));
-    this.eye_shift = map(settings[1], 0, 100, -2, 2);
-    this.mouth_size = map(settings[2], 0, 100, 0.5, 8);
-  }
-
-  /* get internal properties as list of numbers 0-100 */
-  this.getProperties = function() {
-    let settings = new Array(3);
-    settings[0] = map(this.num_eyes, 1, 2, 0, 100);
-    settings[1] = map(this.eye_shift, -2, 2, 0, 100);
-    settings[2] = map(this.mouth_size, 0.5, 8, 0, 100);
-    return settings;
-  }
-}
-
-function DrawShape(coords,dotTransX,dotTransY,dotOffsetX,dotOffsetY,shapeScale,shapeScaleX,shapeScaleY,shapeTilt,bezierJoin){
+  this.DrawShape = function(coords,dotTransX,dotTransY,dotOffsetX,dotOffsetY,shapeScale,shapeScaleX,shapeScaleY,shapeTilt,bezierJoin,roughness){
     push();
-    stroke('black');
-    strokeWeight(0.1);
-    fill('black');
+    // stroke('black');
+    // strokeWeight(this.brush_size/20);
+    noStroke();
+    fill(0,60);
 
     translate(dotTransX, dotTransY);
     scale(shapeScale*shapeScaleX,shapeScale*shapeScaleY);
@@ -256,15 +242,36 @@ function DrawShape(coords,dotTransX,dotTransY,dotOffsetX,dotOffsetY,shapeScale,s
         for (let j=0; j<1; j+=1/BrushDetail){
             ellipse(
                 //x bezier coords
-                bezierPoint(coords[i+0]  -dotOffsetX,    coords[i+2]  -dotOffsetX,    coords[i+4]  -dotOffsetX,    coords[i+6]  -dotOffsetX,    j),
+                bezierPoint(coords[i+0]  -dotOffsetX,    coords[i+2]  -dotOffsetX,    coords[i+4]  -dotOffsetX,    coords[i+6]  -dotOffsetX,    j)  + (noise(i*coords.length,j*2)-0.5)  * this.brush_rough/80,
                 //y bezier coords
-                bezierPoint(coords[i+1]  -dotOffsetY,    coords[i+3]  -dotOffsetY,    coords[i+5]  -dotOffsetY,    coords[i+7]  -dotOffsetY,    j),
+                bezierPoint(coords[i+1]  -dotOffsetY,    coords[i+3]  -dotOffsetY,    coords[i+5]  -dotOffsetY,    coords[i+7]  -dotOffsetY,    j)  + (noise(i*coords.length,j*2+10000)-0.5)  * this.brush_rough/80,
                 // j/1.7+(PI%i)/100  );
-              j/2);
+              j*(this.brush_size/5)+(noise(i*coords.length,j)-0.5)*this.brush_rough/100);
         }
     }
     // ellipse(-4,coords[8],1);
     pop();
+  }
+
+  /* set internal properties based on list numbers 0-100 */
+  this.setProperties = function(settings) {
+    this.brush_rough = int(map(settings[0], 0, 100, 0, 100));
+    this.brush_size = map(settings[1], 20, 100, 1, 4, true);
+    // this.mouth_size = map(settings[2], 0, 100, 0.5, 8);
+  }
+
+  /* get internal properties as list of numbers 0-100 */
+  this.getProperties = function() {
+    let settings = new Array(2);
+    settings[0] = map(this.brush_rough, 0, 100, 0, 100);
+    settings[1] = map(this.brush_size, 1, 4, 0, 100);
+    // settings[2] = map(this.mouth_size, 0.5, 8, 0, 100);
+    return settings;
+  }
+}
+
+function Scribble(){
+  
 }
 
 
