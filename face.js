@@ -4,23 +4,21 @@
  */  
 
 // remove this or set to false to enable full program (load will be slower)
-var DEBUG_MODE = true;
+// var DEBUG_MODE = true;
 
 // this can be used to set the number of sliders to show
 var NUM_SLIDERS = 2;
 
-// other variables can be in here too
-// here's some examples for colors used
-const stroke_color = [95, 52, 8];
-/*
- * some text here
- */
+//  Brush detail sets the quality of the brush strokes, a high value is slower but looks better
 let BrushDetail = 100;
 let iEyeL = 3;
 let iEyeR = 3;
 let iNose = 1;
 let iMouth = 1;
+let bezierJoin  = 0;
+let coords;
 
+//  Here are the bezier coordinates for each face part
 let eyesCoords  = [
   [-6.169677419,-1.227567568,-6.169677419,-1.227567568,-3.498387097,-1.367027027,-1.901612903,-1.357837838,-0.30483871,-1.348648649,0.864193548,-1.328648649,1.76483871,-1.390540541],
   [2.022580645,0.386486486,-1.765806452,1.057837838,-2.138709677,1.197297297,-3.511612903,1.336756757,-2.326129032,1.127027027,-2.138709677,1.197297297,-2.951290323,1.267567568,-0.301612903,-0.192162162,0.764516129,-0.694594595,0.830645161,-1.197027027,1.866129032,0.144594595,3.022580645,0.927027027,2.022580645,0.386486486,-1.765806452,1.057837838,-2.138709677,1.197297297,-3.138709677,1.197297297],
@@ -44,10 +42,7 @@ let mouthCoords = [
   [2.763870968,-0.344594595,2.561290323,-1.175135135,2.065483871,-1.168918919,1.569677419,-1.162432432,0.720967742,-1.521081081,-0.382903226,-1.301081081,-1.487096774,-1.080810811,-2.613548387,-0.822702703,-2.636129032,-0.256486486,-2.658709677,0.31,-2.290645161,0.838648649,-1.772258065,1.146756757,-1.254193548,1.455135135,1.457096774,1.014864865,1.892903226,1.058648649,2.328387097,1.102702703,1.314516129,-1.571621622,1.314516129,-1.571621622,1.314516129,-1.571621622,2.163225806,0.630810811,1.892903226,0.901351351,1.622258065,1.172162162,0.646129032,1.159459459,0.563548387,1.109189189,0.480645161,1.058648649,0.022580645,-1.288378378,0.04516129,-1.546486486,0.067741935,-1.804324324,0.345483871,0.083513514,0.353225806,0.549189189,0.360645161,1.014864865,0.187741935,1.26027027,-0.420645161,1.165675676,-1.028709677,1.071351351,-1.336774194,-0.885675676,-1.419354839,-1.206486486,-1.501935484,-1.527567568,-0.968709677,-0.124324324,-1.066451613,0.026756757,-1.164193548,0.177837838,-2.388387097,0.64972973,-2.448387097,0.549189189,-2.508387097,0.448378378,-0.473225806,0.114864865,-0.037419355,0.102162162,0.398064516,0.08972973,1.862580645,0.039459459,2.065483871,0.08972973,2.268387097,0.14,2.658709677,0.165135135,2.658709677,0.165135135],
   [-2.46,-0.39,-2.4044,-0.496,-2.22,-0.63,-2.0356,-0.764,-1.2382,-1.05,-0.54,-1.11,0.1582,-1.171,1.0596,-1.096,1.38,-0.87,1.7004,-0.645,2.1272,-0.168,1.86,0.09,1.5928,0.348,1.3967,0.535,0.9,0.57,0.4033,0.605,-0.0427,0.684,-0.54,0.57,-1.0373,0.455,-1.2615,-0.014,-1.26,-0.15,-1.2585,-0.286,-1.0272,-0.767,-0.3,-0.87,0.4272,-0.974,1.1736,-0.951,1.38,-0.63,2.0449,0.403,1.8195,0.818,1.419,0.986,1.0185,1.153,0.2036,1.136,-0.3,1.29,-0.8679,1.463,-0.7558,1.463,-0.78,1.5300000],
 ];
-let bezierJoin  = 0;
-let coords;
 
-// example of a global function
 // given a segment, this returns the average point [x, y]
 function segment_average(segment) {
   let sum_x = 0;
@@ -60,17 +55,13 @@ function segment_average(segment) {
   return [sum_x / s_len , sum_y / s_len ];
 }
 
-// This where you define your own face object
 function Face() {
   // these are state variables for a face
-  // (your variables should be different!)
-  this.detailColour = [204, 136, 17];
-  this.mainColour = [51, 119, 153];
-  this.mouth_size = 1;  // range is 0.5 to 8
-  this.vEmo = 4;  // range is 2 to 4
-  this.vAge  = 50; // range is 0 to 100
+  this.detailColour = [5,5,15];
+  this.backColour = [230,235,240];
+  this.vAge  = 50; // Age setting: range is 0 to 100
+  this.vEmo = 4;  // Emotional Valence (sad/happy) setting: range is 2 to 4
   this.faceDirection  = 0;  // is either 0 or 1 (0 is facing left, 1 is facing right)
-
 
   /*
    * Draw the face with position lists that include:
@@ -78,13 +69,7 @@ function Face() {
    *    bottom_lip, top_lip, nose_tip, nose_bridge, 
    */  
   this.draw = function(positions) {
-    // console.log()
-    // head
     ellipseMode(CENTER);
-    stroke(stroke_color);
-    fill(this.mainColour);
-    // ellipse(segment_average(positions.chin)[0], 0, 3, 4);
-    noStroke();
 
     if (segment_average(positions.chin)[0] > 0){
       this.faceDirection  = 0;
@@ -103,6 +88,27 @@ function Face() {
     this.left_brow_height  = (left_eye_pos[1] - segment_average(positions.left_eyebrow)[1]);
     this.right_brow_height = (right_eye_pos[1] - segment_average(positions.right_eyebrow)[1]);
 
+    let pointA;
+    let pointB;
+    //head
+    pointA  = [positions.left_eye[0][0],positions.chin[6][1]];
+    pointB  = positions.chin[9];
+    Scribble(pointA,pointB,this.vEmo,this.backColour);
+    pointA  = positions.chin[10];
+    pointB = [positions.nose_bridge[1][0]-0.1,positions.nose_bridge[3][1]];
+    Scribble(pointA,pointB,this.vEmo,this.backColour);
+    pointA  = segment_average(positions.bottom_lip);
+    pointB = [positions.chin[4][0],positions.chin[1][1]];
+    Scribble(pointA,pointB,this.vEmo,this.backColour);   
+    pointA  = [positions.chin[6][0]-0.2,positions.chin[5][1]];
+    pointB = positions.chin[13];
+    Scribble(pointA,pointB,this.vEmo,this.backColour);
+    pointA  = [positions.left_eye[0][0]-0.2,positions.right_eye[3][1]];
+    pointB = positions.chin[16];
+    Scribble(pointA,pointB,this.vEmo,this.backColour);
+    pointA  = [positions.right_eye[3][0]-0.2,positions.nose_bridge[1][1]];
+    pointB = [0,-1.5];
+    Scribble(pointA,pointB,this.vEmo,this.backColour);
 
     //stroke parameters
     stroke('black');
@@ -189,7 +195,7 @@ function Face() {
     let mouthTransY = 0 + mouth_posY;
     let mouthOffsetX = 0;
     let mouthOffsetY = 0;
-    let mouthScale = this.mouthWidth/3-0.2;
+    let mouthScale = this.mouthWidth/2.8-0.2;
     let mouthScaleX = 1;
     if (iMouth==1){
       mouthScaleX *= -1;
@@ -201,7 +207,6 @@ function Face() {
     this.DrawShape(coords,   mouthTransX,mouthTransY,    mouthOffsetX,mouthOffsetY,    mouthScale,mouthScaleX,1,0,bezierJoin);
   }
 
-  // example of a function *inside* the face object.
   // this draws a segment, and do_loop will connect the ends if true
   this.draw_segment = function(segment, do_loop) {
     for(let i=0; i<segment.length; i++) {
@@ -226,7 +231,7 @@ function Face() {
     // stroke('black');
     // strokeWeight(this.vEmo/20);
     noStroke();
-    fill(0,map(this.vAge,0,100,255,40));
+    fill(this.detailColour,map(this.vAge,0,100,255,40));
 
     translate(dotTransX, dotTransY);
     scale(shapeScale*shapeScaleX,shapeScale*shapeScaleY);
@@ -251,7 +256,6 @@ function Face() {
   this.setProperties = function(settings) {
     this.vAge = int(map(settings[0], 20, 80, 20, 80, true));
     this.vEmo = map(settings[1], 20, 100, 2, 4, true);
-    // this.mouth_size = map(settings[2], 0, 100, 0.5, 8);
   }
 
   /* get internal properties as list of numbers 0-100 */
@@ -259,102 +263,32 @@ function Face() {
     let settings = new Array(2);
     settings[0] = map(this.vAge, 0, 100, 0, 100);
     settings[1] = map(this.vEmo, 2, 4, 0, 100);
-    // settings[2] = map(this.mouth_size, 0.5, 8, 0, 100);
     return settings;
   }
 }
 
-function Scribble(){
-  
+function Scribble(pointA,pointB,vEmo,ink){
+  push();
+  let ldiv  = 20;
+  let lcount  = 10;
+  let ldist = 2;
+  let nDetail = 15;
+  let nAmp  = 7;
+  // let = 0.1;
+  stroke(ink);
+  // strokeWeight(1);
+  translate(-ldist/2,-ldist/8);
+  for (let h=0; h<lcount; h+=1){
+    translate((ldist/lcount/2)*noise(h),-(ldist/lcount)*noise(h+100));
+    for (let i=0; i<ldiv; i+=1){
+      strokeWeight(vEmo/30*map(noise(h,i/10),0,1,0.1,1.3));
+      line(
+        lerp(pointA[0] + noise((h*20+i)/nDetail)*nAmp/5,pointB[0]   +         noise((h*20+i)/nDetail+100)*nAmp/5,i/(ldiv)),
+        lerp(pointA[1] + noise((h*20+i)/nDetail)*nAmp/5,pointB[1]   +         noise((h*20+i)/nDetail+100)*nAmp/5,i/(ldiv)),
+        lerp(pointA[0] + noise((h*20+i)/nDetail+1/nDetail)*nAmp/5,pointB[0] + noise((h*20+i)/nDetail+100+1/nDetail)*nAmp/5,(i+1)/(ldiv)),
+        lerp(pointA[1] + noise((h*20+i)/nDetail+1/nDetail)*nAmp/5,pointB[1] + noise((h*20+i)/nDetail+100+1/nDetail)*nAmp/5,(i+1)/(ldiv))
+      );
+    }
+  }
+  pop();
 }
-
-
-// function ololodrawface(iEyeL,sPupil) {
-//   let bezierJoin = 0;
-
-//   //stroke parameters
-//   stroke('black');
-//   strokeWeight(0.1);
-//   fill('black');
-
-//   /*
-  
-//       part-TransX     =   moves the face part after the scale has been applied
-//       part-TransY     =   ~
-//       part-OffsetX    =   shifts the origin of the body part, useful for shifting where the part scales from
-//       part-OffsetY    =   ~
-//       part-Scale      =   scales the face part
-
-//   */
-
-//   //EYE LEFT
-//   let coords  =   split(eyesCoords[iEyeL],',');
-//   let L_eyeTransX = 0;
-//   let L_eyeTransY = 0;
-//   let L_eyeOffsetX = 1;
-//   let L_eyeOffsetY = 0;
-//   let L_eyeScale  = 1;
-//   // define if the gaps in the beziers should be bridged, as some shapes contain disjointed parts
-//   if (iEyeL==6) {
-//       bezierJoin = 2;
-//   }
-
-//   DrawShape(coords,   L_eyeTransX,L_eyeTransY,    L_eyeOffsetX,L_eyeOffsetY,    L_eyeScale,1,1,0,bezierJoin);
-
-//   //PUPIL LEFT
-//   coords  =   split(pupilCoords[0],',');
-//   let L_pupilTransX = -0.7;
-//   let L_pupilTransY = 0.7;
-//   let L_pupilOffsetX = -1.5;
-//   let L_pupilOffsetY = -0.2;
-//   let L_pupilScale  = sPupil/100+0.5;
-
-//   DrawShape(coords,   L_pupilTransX,L_pupilTransY,    L_pupilOffsetX,L_pupilOffsetY,    L_pupilScale,1,1,0,0);
-
-//   //EYE RIGHT
-//   coords  =   split(eyesCoords[iEyeL],',');
-//   let R_eyeTransX = 3;
-//   let R_eyeTransY = 0;
-//   let R_eyeOffsetX = 0;
-//   let R_eyeOffsetY = 0;
-//   let R_eyeScale  = 1;
-//   let R_eyeScaleX  = -1;
-//   let R_eyeScaleY  = 1;
-//   let R_eyeTilt  = 0;
-//   // define if the gaps in the beziers should be bridged, as some shapes contain disjointed parts
-//   if (iEyeL==6) {
-//       bezierJoin = 2;
-//   }
-
-//   DrawShape(coords,   R_eyeTransX,R_eyeTransY,    R_eyeOffsetX,R_eyeOffsetY,    R_eyeScale,R_eyeScaleX,R_eyeScaleY,   R_eyeTilt ,bezierJoin);
-
-//   //PUPIL RIGHT
-//   coords  =   split(pupilCoords[0],',');
-//   let R_pupilTransX = 3;
-//   let R_pupilTransY = 0;
-//   let R_pupilOffsetX = -1.5;
-//   let R_pupilOffsetY = -0.5;
-//   let R_pupilScale  = sPupil/100+0.4;
-
-//   DrawShape(coords,   R_pupilTransX,R_pupilTransY,    R_pupilOffsetX,R_pupilOffsetY,    R_pupilScale,1,1,0,0);
-
-//   //NOSE
-//   coords  =   split(noseCoords[iNose],',');
-//   let noseTransX = 1;
-//   let noseTransY = 1;
-//   let noseOffsetX = 0;
-//   let noseOffsetY = 0;
-//   let noseScale  = 1;
-
-//   DrawShape(coords,   noseTransX,noseTransY,    noseOffsetX,noseOffsetY,    noseScale,1,1,0,bezierJoin);   
-
-//   //MOUTH
-//   coords  =   split(mouthCoords[iMouth],',');
-//   let mouthTransX = 1;
-//   let mouthTransY = 6;
-//   let mouthOffsetX = 0;
-//   let mouthOffsetY = 0;
-//   let mouthScale = 1;
-
-//   DrawShape(coords,   mouthTransX,mouthTransY,    mouthOffsetX,mouthOffsetY,    mouthScale,1,1,0,bezierJoin);
-// }
